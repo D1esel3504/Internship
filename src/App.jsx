@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 import './App.scss';
+import { fetchUsers } from './redux/asyncAction/users';
 
 
 
@@ -12,7 +14,10 @@ const App = () => {
   const roomsApi = 'https://tms-js-pro-back-end.herokuapp.com/api/meet-rooms/'
   const [findRoom, setFindRoom] = useState([])
   const [filterRoom, setFilterRoom] = useState([])
+  const dispatch = useDispatch()
+  const user = useSelector(state => state)
 
+console.log(user);
 
   const requestOnServer = () => {
     return fetch(
@@ -73,6 +78,7 @@ const App = () => {
               <li>{i.description}</li>
             </ul>
           ))}
+          <button onClick={() => {dispatch(fetchUsers)}}>Получить пользователей</button>
         </div>
         {findRoom && findRoom.map(i => (
           <div className="info">
@@ -81,6 +87,7 @@ const App = () => {
             <span>Floor - {i.floor}</span>
           </div>
         ))}
+        {user.length > 0 ? user.map( user => (<div>{user.username}</div> )) : <div>Нет пользователей</div>}
       </div>
     </div>
   );
