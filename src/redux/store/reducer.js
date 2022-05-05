@@ -13,7 +13,7 @@ export const reducer = (state = defaultState, action) => {
         case REMOVE_ALL_USERS:
             return { ...state, users: [] }
         case REMOVE_USER:
-            return { ...state, users: state.users.filter(user => user.id !== action.payload)}
+            return { ...state, users: action.payload}
 
         default:
             return state;
@@ -21,5 +21,5 @@ export const reducer = (state = defaultState, action) => {
 }
 
 export const addAllUsersAction = (payload) => ({ type: ADD_ALL_USERS, payload })
-export const removeAllUsersAction = (payload) => ({ type: REMOVE_ALL_USERS, payload })
+export const removeAllUsersAction = () => ({ type: REMOVE_ALL_USERS })
 export const removeUserAction = (payload) => ({ type:REMOVE_USER, payload })

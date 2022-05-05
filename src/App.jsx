@@ -11,9 +11,10 @@ import { removeAllUsersAction, removeUserAction } from './redux/store/reducer';
 
 const App = () => {
   const dispatch = useDispatch()
-  const user = useSelector(state => state.users)
+  const users = useSelector(state => state.users)
 
-console.log(user);
+  const usersFilter = id => users.filter(user => user.id !== id)
+
 
 
 
@@ -24,12 +25,12 @@ console.log(user);
           <button onClick={() => { dispatch(fetchUsers()) }}>Получить пользователей</button>
           <button onClick={() => { dispatch(removeAllUsersAction()) }}>Удалить пользователей</button>
         </div>
-        {user.length > 0 ? user.map(user => (
+        {users.length > 0 ? users.map(user => (
           <div className="info">
             <span>UserName - {user.username}</span>
             <span>Email - {user.email}</span>
             <span>ID - {user.id}</span>
-            <button onClick={()=> {dispatch(removeUserAction(user.id))}}>Удалить пользователя</button>
+            <button onClick={()=> {dispatch(removeUserAction(usersFilter(user.id)))}}>Удалить пользователя</button>
           </div>
         ))
           : <div>Нет пользователей</div>}
