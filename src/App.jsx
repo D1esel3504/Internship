@@ -1,5 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 import './App.scss';
+import { removeAllUsersAction, removeUserAction, fetchUsers} from './store/reducer';
 
 
 
@@ -7,80 +9,30 @@ import './App.scss';
 
 
 const App = () => {
-  const [rooms, setRooms] = useState([])
-  const textInput = useRef()
-  const roomsApi = 'https://tms-js-pro-back-end.herokuapp.com/api/meet-rooms/'
-  const [findRoom, setFindRoom] = useState([])
-  const [filterRoom, setFilterRoom] = useState([])
+  const dispatch = useDispatch()
+  const users = useSelector(state => state.users)
+
+  const usersFilter = id => users.filter(user => user.id !== id)
 
 
-  const requestOnServer = () => {
-    return fetch(
-      roomsApi,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    )
-  }
-
-  useEffect(() => {
-    const getRooms = async () => {
-      try {
-        const getRooms = await requestOnServer()
-        const result = await getRooms.json()
-        setRooms(result)
-      } catch (error) {
-        console.error('error-' + error)
-      }
-    }
-    getRooms()
-  }, [])
-
-
-  const searchRoom = () => {
-    if (textInput.current.value !== '') {
-      const foundedRoom = rooms.filter(i => i.description.toUpperCase().includes(textInput.current.value.toUpperCase()))
-      setFindRoom(foundedRoom)
-      textInput.current.value = ''
-    }
-  }
-
-  const handleChange = () => {
-    if (textInput.current.value !== '') {
-      const checkedRoom = rooms.filter(i => i.description.toUpperCase().includes(textInput.current.value.toUpperCase()))
-      setFilterRoom(checkedRoom)
-    }
-    else {
-      setFilterRoom([])
-    }
-
-  }
-
-
-
+console.log(users);
 
   return (
     <div className="wrapper">
       <div className="input">
         <div>
-          <input ref={textInput} onChange={handleChange} type="text" placeholder='press room' />
-          <button onClick={searchRoom}>Search</button>
-          {filterRoom && filterRoom.map(i => (
-            <ul className="info">
-              <li>{i.description}</li>
-            </ul>
-          ))}
+          <button onClick={() => { dispatch(fetchUsers()) }}>Получить пользователей</button>
+          <button onClick={() => { dispatch(removeAllUsersAction()) }}>Удалить пользователей</button>
         </div>
-        {findRoom && findRoom.map(i => (
+        {users.length > 0 ? users.map(user => (
           <div className="info">
-            <span>{i.description}</span>
-            <span>Address - {i.address}</span>
-            <span>Floor - {i.floor}</span>
+            <span>UserName - {user.username}</span>
+            <span>Email - {user.email}</span>
+            <span>ID - {user.id}</span>
+            <button onClick={()=> {dispatch(removeUserAction(usersFilter(user.id)))}}>Удалить пользователя</button>
           </div>
-        ))}
+        ))
+          : <div>Нет пользователей</div>}
       </div>
     </div>
   );
