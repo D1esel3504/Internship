@@ -6,9 +6,12 @@ const fetchUsersfromApi = () => fetch("https://jsonplaceholder.typicode.com/user
 
 
 
+
+
+
 function* fetchUserWorker() {
     const data = yield call(fetchUsersfromApi)
-    const json = yield call(() => new Promise(res => res(data.json())))
+    const json = yield call(() => data.json())
     yield put(addAllUsersAction(json))
 }
 
